@@ -1,0 +1,113 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct node {
+    string label;
+    int child_nodes;
+    node* child[10];
+};
+
+class Tree {
+private:
+    node* root;
+
+public:
+    Tree() {
+        root = nullptr;
+    }
+
+    ~Tree() {
+        destroyTree(root);
+    }
+
+    void create() {
+        root = new node;
+        cout << "Enter name of Book: ";
+        cin >> root->label;
+        cout << "Enter number of Chapters: ";
+        cin >> root->child_nodes;
+
+        for (int i = 0; i < root->child_nodes; i++) {
+            root->child[i] = new node;
+            cout << "Enter name of Chapter " << i + 1 << ": ";
+            cin >> root->child[i]->label;
+            cout << "Enter number of Sections in Chapter " << i + 1 << ": ";
+            cin >> root->child[i]->child_nodes;
+
+            for (int j = 0; j < root->child[i]->child_nodes; j++) {
+                root->child[i]->child[j] = new node;
+                cout << "Enter name of Section " << j + 1 << ": ";
+                cin >> root->child[i]->child[j]->label;
+                cout << "Enter number of Sub-sections in Section " << j + 1 << ": ";
+                cin >> root->child[i]->child[j]->child_nodes;
+
+                for (int k = 0; k < root->child[i]->child[j]->child_nodes; k++) {
+                    root->child[i]->child[j]->child[k] = new node;
+                    cout << "Enter name of Sub-section " << k + 1 << ": ";
+                    cin >> root->child[i]->child[j]->child[k]->label;
+                }
+            }
+        }
+    }
+
+    void display() {
+        if (!root) {
+            cout << "\nNo book information available. Please add a book first.\n";
+            return;
+        }
+
+        cout << "\nBOOK: " << root->label << endl;
+        cout << "Number of Chapters: " << root->child_nodes << endl;
+
+        for (int i = 0; i < root->child_nodes; i++) {
+            cout << "\nChapter " << i + 1 << ": " << root->child[i]->label << endl;
+            cout << "Number of Sections: " << root->child[i]->child_nodes << endl;
+
+            for (int j = 0; j < root->child[i]->child_nodes; j++) {
+                cout << "\tSection " << j + 1 << ": " << root->child[i]->child[j]->label << endl;
+                cout << "\tNumber of Sub-sections: " << root->child[i]->child[j]->child_nodes << endl;
+
+                for (int k = 0; k < root->child[i]->child[j]->child_nodes; k++) {
+                    cout << "\t\tSub-section " << k + 1 << ": " << root->child[i]->child[j]->child[k]->label << endl;
+                }
+            }
+        }
+    }
+
+    void destroyTree(node* r) {
+        if (!r) return;
+
+        for (int i = 0; i < r->child_nodes; i++) {
+            destroyTree(r->child[i]);
+        }
+
+        delete r;
+    }
+};
+
+int main() {
+    int ch;
+    Tree tree;
+
+    while (true) {
+        cout << "\n1. Add book info\n2. Display book info\n3. Exit\n";
+        cout << "Enter choice: ";
+        cin >> ch;
+
+        switch (ch) {
+            case 1:
+                tree.create();
+                break;
+            case 2:
+                tree.display();
+                break;
+            case 3:
+                cout << "\nExiting program...\n";
+                return 0;
+            default:
+                cout << "Invalid input, please enter a valid option.\n";
+                break;
+        }
+    }
+}
